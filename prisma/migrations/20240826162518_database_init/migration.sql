@@ -1,5 +1,5 @@
 -- CreateTable
-CREATE TABLE "User" (
+CREATE TABLE "user" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
@@ -9,11 +9,11 @@ CREATE TABLE "User" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT now(),
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "user_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "Profile" (
+CREATE TABLE "profile" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "displayName" TEXT NOT NULL,
     "email" TEXT NOT NULL,
@@ -25,65 +25,65 @@ CREATE TABLE "Profile" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT now(),
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "Profile_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "profile_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "ProfileLink" (
+CREATE TABLE "profileLink" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "profileId" UUID NOT NULL,
     "link" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT now(),
 
-    CONSTRAINT "ProfileLink_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "profileLink_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "ProfileSocialMedia" (
+CREATE TABLE "profileSocialMedia" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "profileId" UUID NOT NULL,
     "socialMediaId" UUID NOT NULL,
     "link" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT now(),
 
-    CONSTRAINT "ProfileSocialMedia_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "profileSocialMedia_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "SocialMedia" (
+CREATE TABLE "socialMedia" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "name" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT now(),
 
-    CONSTRAINT "SocialMedia_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "socialMedia_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "Organization" (
+CREATE TABLE "organization" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT now(),
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "Organization_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "organization_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+CREATE UNIQUE INDEX "user_email_key" ON "user"("email");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Profile_email_key" ON "Profile"("email");
+CREATE UNIQUE INDEX "profile_email_key" ON "profile"("email");
 
 -- AddForeignKey
-ALTER TABLE "Profile" ADD CONSTRAINT "Profile_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "profile" ADD CONSTRAINT "profile_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Profile" ADD CONSTRAINT "Profile_organizationId_fkey" FOREIGN KEY ("organizationId") REFERENCES "Organization"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "profile" ADD CONSTRAINT "profile_organizationId_fkey" FOREIGN KEY ("organizationId") REFERENCES "organization"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "ProfileLink" ADD CONSTRAINT "ProfileLink_profileId_fkey" FOREIGN KEY ("profileId") REFERENCES "Profile"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "profileLink" ADD CONSTRAINT "profileLink_profileId_fkey" FOREIGN KEY ("profileId") REFERENCES "profile"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "ProfileSocialMedia" ADD CONSTRAINT "ProfileSocialMedia_profileId_fkey" FOREIGN KEY ("profileId") REFERENCES "Profile"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "profileSocialMedia" ADD CONSTRAINT "profileSocialMedia_profileId_fkey" FOREIGN KEY ("profileId") REFERENCES "profile"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "ProfileSocialMedia" ADD CONSTRAINT "ProfileSocialMedia_socialMediaId_fkey" FOREIGN KEY ("socialMediaId") REFERENCES "SocialMedia"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "profileSocialMedia" ADD CONSTRAINT "profileSocialMedia_socialMediaId_fkey" FOREIGN KEY ("socialMediaId") REFERENCES "socialMedia"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
