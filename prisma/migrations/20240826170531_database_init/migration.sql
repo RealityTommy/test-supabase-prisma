@@ -1,11 +1,11 @@
 -- CreateTable
 CREATE TABLE "user" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
-    "name" TEXT NOT NULL,
+    "name" TEXT,
     "email" TEXT NOT NULL,
-    "phone" TEXT NOT NULL,
-    "phoneCall" BOOLEAN NOT NULL,
-    "phoneText" BOOLEAN NOT NULL,
+    "phone" TEXT,
+    "phoneCall" BOOLEAN,
+    "phoneText" BOOLEAN,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT now(),
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -15,8 +15,9 @@ CREATE TABLE "user" (
 -- CreateTable
 CREATE TABLE "profile" (
     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
-    "displayName" TEXT NOT NULL,
-    "email" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "displayName" TEXT,
+    "email" TEXT,
     "phone" TEXT,
     "phoneCall" BOOLEAN,
     "phoneText" BOOLEAN,
@@ -69,9 +70,6 @@ CREATE TABLE "organization" (
 
 -- CreateIndex
 CREATE UNIQUE INDEX "user_email_key" ON "user"("email");
-
--- CreateIndex
-CREATE UNIQUE INDEX "profile_email_key" ON "profile"("email");
 
 -- AddForeignKey
 ALTER TABLE "profile" ADD CONSTRAINT "profile_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

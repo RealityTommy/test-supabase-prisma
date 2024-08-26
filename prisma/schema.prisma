@@ -15,30 +15,32 @@ datasource db {
 
 // User model
 model user {
-  id        String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name      String
-  email     String  @unique
-  phone     String
-  phoneCall Boolean
-  phoneText Boolean
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name      String?
+  email     String   @unique
+  phone     String?
+  phoneCall Boolean?
+  phoneText Boolean?
 
   createdAt DateTime @default(dbgenerated("now()"))
   updatedAt DateTime @updatedAt
 
-  profiles profile[]
+  profiles           profile[]
+  organizationUsers organizationUsers[]
 }
 
 // Profile model
 model profile {
   id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  displayName String
-  email       String   @unique
+  name        String
+  displayName String?
+  email       String?
   phone       String?
   phoneCall   Boolean?
   phoneText   Boolean?
 
-  user   user   @relation(fields: [userId], references: [id])
-  userId String @db.Uuid
+  user   user?   @relation(fields: [userId], references: [id])
+  userId String? @db.Uuid
 
   organization   organization? @relation(fields: [organizationId], references: [id])
   organizationId String?       @db.Uuid
@@ -64,33 +66,55 @@ model profileLink {
 // Profile social media model
 model profileSocialMedia {
   id        String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+
   profile   profile @relation(fields: [profileId], references: [id])
   profileId String  @db.Uuid
 
-  socialMedia   socialMedia @relation(fields: [socialMediaId], references: [id])
-  socialMediaId String      @db.Uuid
+  socialMedia socialMediaPlatform
 
   link String
 
   createdAt DateTime @default(dbgenerated("now()"))
 }
 
-// Social media model
-model socialMedia {
-  id   String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name String
-
-  createdAt DateTime @default(dbgenerated("now()"))
-
-  profileSocialMedia profileSocialMedia[]
-}
-
 // Organization model
 model organization {
-  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id   String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name String @unique
 
   createdAt DateTime @default(dbgenerated("now()"))
   updatedAt DateTime @updatedAt
 
   profiles profile[]
+
+  organizationUsers organizationUsers[]
+}
+
+// Organization users model
+model organizationUsers {
+  @@id([organizationId, userId])
+
+  organization   organization @relation(fields: [organizationId], references: [id])
+  organizationId String       @db.Uuid
+
+  user   user   @relation(fields: [userId], references: [id])
+  userId String @db.Uuid
+
+  role OrganizationRole @default(MEMBER)
+
+  createdAt DateTime @default(dbgenerated("now()"))
+  updatedAt DateTime @updatedAt
+}
+
+enum socialMediaPlatform {
+  FACEBOOK
+  X
+  INSTAGRAM
+  LINKEDIN
+  YOUTUBE
+}
+
+enum OrganizationRole {
+  ADMIN
+  MEMBER
 }
