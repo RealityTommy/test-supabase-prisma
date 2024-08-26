@@ -1,0 +1,96 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User model
+model User {
+  id        String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name      String
+  email     String  @unique
+  phone     String
+  phoneCall Boolean
+  phoneText Boolean
+
+  createdAt DateTime @default(dbgenerated("now()"))
+  updatedAt DateTime @updatedAt
+
+  profiles Profile[]
+}
+
+// Profile model
+model Profile {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  displayName String
+  email       String   @unique
+  phone       String?
+  phoneCall   Boolean?
+  phoneText   Boolean?
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @db.Uuid
+
+  organization   Organization? @relation(fields: [organizationId], references: [id])
+  organizationId String?       @db.Uuid
+
+  createdAt DateTime @default(dbgenerated("now()"))
+  updatedAt DateTime @updatedAt
+
+  links       ProfileLink[]
+  socialMedia ProfileSocialMedia[]
+}
+
+// Profile link model
+model ProfileLink {
+  id        String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  profile   Profile @relation(fields: [profileId], references: [id])
+  profileId String  @db.Uuid
+
+  link String
+
+  createdAt DateTime @default(dbgenerated("now()"))
+}
+
+// Profile social media model
+model ProfileSocialMedia {
+  id        String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  profile   Profile @relation(fields: [profileId], references: [id])
+  profileId String  @db.Uuid
+
+  socialMedia   SocialMedia @relation(fields: [socialMediaId], references: [id])
+  socialMediaId String      @db.Uuid
+
+  link String
+
+  createdAt DateTime @default(dbgenerated("now()"))
+}
+
+// Social media model
+model SocialMedia {
+  id   String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name String
+
+  createdAt DateTime @default(dbgenerated("now()"))
+
+  profileSocialMedia ProfileSocialMedia[]
+}
+
+// Organization model
+model Organization {
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+
+  createdAt DateTime @default(dbgenerated("now()"))
+  updatedAt DateTime @updatedAt
+
+  profiles Profile[]
+}
