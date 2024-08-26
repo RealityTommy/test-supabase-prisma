@@ -5,12 +5,14 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["multiSchema"]
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  schemas  = ["public", "auth"]
 }
 
 // User model
@@ -25,8 +27,10 @@ model user {
   createdAt DateTime @default(dbgenerated("now()"))
   updatedAt DateTime @updatedAt
 
-  profiles           profile[]
+  profiles          profile[]
   organizationUsers organizationUsers[]
+
+  @@schema("public")
 }
 
 // Profile model
@@ -50,6 +54,8 @@ model profile {
 
   links       profileLink[]
   socialMedia profileSocialMedia[]
+
+  @@schema("public")
 }
 
 // Profile link model
@@ -61,11 +67,13 @@ model profileLink {
   link String
 
   createdAt DateTime @default(dbgenerated("now()"))
+
+  @@schema("public")
 }
 
 // Profile social media model
 model profileSocialMedia {
-  id        String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
 
   profile   profile @relation(fields: [profileId], references: [id])
   profileId String  @db.Uuid
@@ -75,6 +83,8 @@ model profileSocialMedia {
   link String
 
   createdAt DateTime @default(dbgenerated("now()"))
+
+  @@schema("public")
 }
 
 // Organization model
@@ -88,6 +98,8 @@ model organization {
   profiles profile[]
 
   organizationUsers organizationUsers[]
+
+  @@schema("public")
 }
 
 // Organization users model
@@ -104,6 +116,8 @@ model organizationUsers {
 
   createdAt DateTime @default(dbgenerated("now()"))
   updatedAt DateTime @updatedAt
+
+  @@schema("public")
 }
 
 enum socialMediaPlatform {
@@ -112,9 +126,13 @@ enum socialMediaPlatform {
   INSTAGRAM
   LINKEDIN
   YOUTUBE
+
+  @@schema("public")
 }
 
 enum OrganizationRole {
   ADMIN
   MEMBER
+
+  @@schema("public")
 }
